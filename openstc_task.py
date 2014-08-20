@@ -440,7 +440,6 @@ class task(OpenbaseCore):
 
         return True
 
-
     """
         Update equipment information when task has done
     """
@@ -526,6 +525,15 @@ class task(OpenbaseCore):
             self.reportHours(cr, uid, ids, vals, context=context)
 
         return True
+    
+    def unlink(self, cr, uid, ids, context=None):
+        ids = ids if isinstance(ids, list) else [ids]
+        inter_obj = self.pool.get('project.project')
+        inter_ids = inter_obj.search(cr, uid, [('tasks.id', 'in', ids)], context=context)
+        
+        ret = super(task, self).unlink(cr, uid, ids, context=context)
+        inter_obj.check_remaining_tasks_and_validate(cr, uid, inter_ids, context=context)
+        return ret
 
     def cancel(self, cr, uid, ids, params, context={}):
         """

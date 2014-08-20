@@ -451,6 +451,24 @@ class project(OpenbaseCore):
                             'state': 'finished',
                         }, context=context)
         return True;
+    
+        ## Check if there is no more task to treat, finish the inter, else, do nothing
+    def check_remaining_tasks_and_validate(self, cr, uid, ids, context=None):
+        ids = ids if isinstance(ids, list) else [ids]
+        #look for pending intervetions
+        pending_inter_ids = self.search(cr, uid, [('id', 'in', ids), '|',('tasks.state', 'in', ['open','pending', 'draft']), ('tasks', '=', False)], context=context)
+        #the intervention to close are the ones not present in pending_inter_ids
+        toclose_inter_ids = [x for x in ids if x not in pending_inter_ids]
+        if toclose_inter_ids:
+            self.write(cr, uid, toclose_inter_ids, {'state': 'finished',}, context=context)
+            
+            ask_obj = self.pool.get('openstc.ask')
+            toclose_ask_ids = ask_obj.search(cr, uid, [('intervention_ids.id', 'in', toclose_inter_ids)], context=context)
+            if toclose_ask_ids:
+                ask_obj.write(cr, uid, toclose_ask_ids, {'state':'finished'}, context=context)
+        #TODO
+        #send email ==>  email_text: demande 'finished',
+        return toclose_inter_ids
 
     _defaults = {
         'ask_id' : _get_ask,
