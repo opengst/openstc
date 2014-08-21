@@ -391,17 +391,9 @@ class task(OpenbaseCore):
                 'oil_price': 0 if params.has_key('oil_price')== False else params['oil_price'],
             }, context=context)
 
-
-
-        ask_id = 0
-        if project!=None :
-            ask_id = project.ask_id.id
-
-
-
         if openstc._test_params(params,['remaining_hours'])!=False:
-           #Not finnished task : Create new task for planification
-           task_obj.create(cr, uid, {
+            #Not finnished task : Create new task for planification
+            task_obj.create(cr, uid, {
                  'name'              : task.name,
                  'parent_id'         : task.id,
                  'project_id'        : task.project_id.id or False,
@@ -416,27 +408,8 @@ class task(OpenbaseCore):
              }, context)
         else:
             #Finnished task
-            all_task_finnished = True
-
-            #if task is the last at ['open','pending', 'draft'] state on intervention : close intervention and ask.
-            if project != None and project:
-                for t in project.tasks :
-                    if task.id!=t.id and t.state in ['open','pending', 'draft']:
-                        all_task_finnished = False
-                        break
-
-                if all_task_finnished == True:
-                    project_obj.write(cr, uid, project.id, {
-                        'state': 'finished',
-                    }, context=context)
-
-                    if ask_id>0 :
-                        ask_obj.write(cr, uid, ask_id, {
-                            'state': 'finished',
-                        }, context=context)
-
-                    #TODO
-                    #send email ==>  email_text: demande 'finished',
+            if project:
+                project_obj.check_remaining_tasks_and_validate(cr, uid, project.id, context=context)
 
         return True
 

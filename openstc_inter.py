@@ -418,7 +418,7 @@ class project(OpenbaseCore):
         return True
 
 
-    #Cancel intervention from swif
+    #Cancel intervention from swif @toremove ?
     def cancel(self, cr, uid, ids, params, context=None):
         #print("test"+params)
         project_obj = self.pool.get(self._name)
