@@ -193,34 +193,38 @@
 					% for inter in object.intervention_ids:
 						% for task in inter.tasks:
 						<%
-							my_checkin = datetime.strptime(str(task.date_start),"%Y-%m-%d %H:%M:%S").replace(tzinfo=pytz.utc)
-							my_checkout = datetime.strptime(str(task.date_end),"%Y-%m-%d %H:%M:%S").replace(tzinfo=pytz.utc)
-							if my_first_checkin == None:
-								my_first_checkin = my_checkin
-							if my_checkin < my_first_checkin:
-								my_first_checkin = my_checkin
+							if task.date_start and task.date_end:
+								my_checkin = datetime.strptime(str(task.date_start),"%Y-%m-%d %H:%M:%S").replace(tzinfo=pytz.utc)
+								my_checkout = datetime.strptime(str(task.date_end),"%Y-%m-%d %H:%M:%S").replace(tzinfo=pytz.utc)
+								if my_first_checkin == None:
+									my_first_checkin = my_checkin
+								if my_checkin < my_first_checkin:
+									my_first_checkin = my_checkin
+	
+	
+								if my_last_checkout == None:
+									my_last_checkout = my_checkout
+								if my_checkout > my_last_checkout:
+									my_last_checkout = my_checkout
 
-
-							if my_last_checkout == None:
-								my_last_checkout = my_checkout
-							if my_checkout > my_last_checkout:
-								my_last_checkout = my_checkout
-
-
-							my_checkin_str = my_checkin.astimezone(pytz.timezone("Europe/Paris")).strftime(("%x %Hh%M").encode('utf-8'))
-							my_first_checkin_str = my_first_checkin.astimezone(pytz.timezone("Europe/Paris")).strftime(("%x %Hh%M").encode('utf-8'))
-							my_checkout_str = my_checkout.astimezone(pytz.timezone("Europe/Paris")).strftime(("%x %Hh%M").encode('utf-8'))
-							my_last_checkout_str = my_last_checkout.astimezone(pytz.timezone("Europe/Paris")).strftime(("%x %Hh%M").encode('utf-8'))
-
-							my_checkin_str = my_checkin_str.decode('utf-8')
-							my_first_checkin_str = my_first_checkin_str.decode('utf-8')
-							my_checkout_str = my_checkout_str.decode('utf-8')
-							my_last_checkout_str = my_last_checkout_str.decode('utf-8')
 						%>
 						% endfor
 					% endfor
-
+					<%
+					if my_first_checkin and my_last_checkout:
+						my_checkin_str = my_checkin.astimezone(pytz.timezone("Europe/Paris")).strftime(("%x %Hh%M").encode('utf-8'))
+						my_first_checkin_str = my_first_checkin.astimezone(pytz.timezone("Europe/Paris")).strftime(("%x %Hh%M").encode('utf-8'))
+						my_checkout_str = my_checkout.astimezone(pytz.timezone("Europe/Paris")).strftime(("%x %Hh%M").encode('utf-8'))
+						my_last_checkout_str = my_last_checkout.astimezone(pytz.timezone("Europe/Paris")).strftime(("%x %Hh%M").encode('utf-8'))
+	
+						my_checkin_str = my_checkin_str.decode('utf-8')
+						my_first_checkin_str = my_first_checkin_str.decode('utf-8')
+						my_checkout_str = my_checkout_str.decode('utf-8')
+						my_last_checkout_str = my_last_checkout_str.decode('utf-8')
+					%>
+					% if my_first_checkin_str and my_last_checkout_str:
 					<p>L'intervention <b>${object.name}</b> s'est déroulée à partir du ${my_first_checkin_str} et s'est terminée le ${my_last_checkout_str}.<br>
+					% endif
 					Cette intervention est terminée.</p>
 
 					<p>Bien cordialement</p>
@@ -247,36 +251,41 @@
 					%>
 
 					% for inter in object.intervention_ids:
-						%for task in inter.tasks:
+						% for task in inter.tasks:
 						<%
-							my_checkin = datetime.strptime(str(task.date_start),"%Y-%m-%d %H:%M:%S").replace(tzinfo=pytz.utc)
-							my_checkout = datetime.strptime(str(task.date_end),"%Y-%m-%d %H:%M:%S").replace(tzinfo=pytz.utc)
-							if my_first_checkin == None:
-								my_first_checkin = my_checkin
-							if my_checkin < my_first_checkin:
-								my_first_checkin = my_checkin
+							if task.date_start and task.date_end:
+								my_checkin = datetime.strptime(str(task.date_start),"%Y-%m-%d %H:%M:%S").replace(tzinfo=pytz.utc)
+								my_checkout = datetime.strptime(str(task.date_end),"%Y-%m-%d %H:%M:%S").replace(tzinfo=pytz.utc)
+								if my_first_checkin == None:
+									my_first_checkin = my_checkin
+								if my_checkin < my_first_checkin:
+									my_first_checkin = my_checkin
+	
+	
+								if my_last_checkout == None:
+									my_last_checkout = my_checkout
+								if my_checkout > my_last_checkout:
+									my_last_checkout = my_checkout
+							endif
 
-
-							if my_last_checkout == None:
-								my_last_checkout = my_checkout
-							if my_checkout > my_last_checkout:
-								my_last_checkout = my_checkout
-
-
-							my_checkin_str = my_checkin.astimezone(pytz.timezone("Europe/Paris")).strftime(("%x %Hh%M").encode('utf-8'))
-							my_first_checkin_str = my_first_checkin.astimezone(pytz.timezone("Europe/Paris")).strftime(("%x %Hh%M").encode('utf-8'))
-							my_checkout_str = my_checkout.astimezone(pytz.timezone("Europe/Paris")).strftime(("%x %Hh%M").encode('utf-8'))
-							my_last_checkout_str = my_last_checkout.astimezone(pytz.timezone("Europe/Paris")).strftime(("%x %Hh%M").encode('utf-8'))
-
-							my_checkin_str = my_checkin_str.decode('utf-8')
-							my_first_checkin_str = my_first_checkin_str.decode('utf-8')
-							my_checkout_str = my_checkout_str.decode('utf-8')
-							my_last_checkout_str = my_last_checkout_str.decode('utf-8')
 						%>
 						% endfor
 					% endfor
-
-					Suite à la demande d'intervention ${object.name} s'est déroulée à partir du ${my_first_checkin_str} et s'est terminée le ${my_last_checkout_str}.
+					<%
+					if my_first_checkin and my_last_checkout:
+						my_checkin_str = my_checkin.astimezone(pytz.timezone("Europe/Paris")).strftime(("%x %Hh%M").encode('utf-8'))
+						my_first_checkin_str = my_first_checkin.astimezone(pytz.timezone("Europe/Paris")).strftime(("%x %Hh%M").encode('utf-8'))
+						my_checkout_str = my_checkout.astimezone(pytz.timezone("Europe/Paris")).strftime(("%x %Hh%M").encode('utf-8'))
+						my_last_checkout_str = my_last_checkout.astimezone(pytz.timezone("Europe/Paris")).strftime(("%x %Hh%M").encode('utf-8'))
+	
+						my_checkin_str = my_checkin_str.decode('utf-8')
+						my_first_checkin_str = my_first_checkin_str.decode('utf-8')
+						my_checkout_str = my_checkout_str.decode('utf-8')
+						my_last_checkout_str = my_last_checkout_str.decode('utf-8')
+					%>
+					% if my_first_checkin_str and my_last_checkout_str:
+					L'intervention ${object.name} s'est déroulée à partir du ${my_first_checkin_str} et s'est terminée le ${my_last_checkout_str}.
+					% endif
 					Cette intervention est terminée.
 
 					Bien cordialement
