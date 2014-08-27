@@ -926,3 +926,11 @@ class project_task_history(OpenbaseCore):
         'state': fields.selection([('finished', 'Finished'),('absent', 'Absent'),('draft', 'New'),('open', 'In Progress'),('pending', 'Pending'), ('done', 'Done'), ('cancelled', 'Cancelled')], 'State'),
 
     }
+
+class equipment_lines(osv.osv):
+    _inherit = "openstc.equipment.lines"
+    _columns = {
+         'task_id':fields.many2one('project.task', 'Task'),
+        }
+    
+equipment_lines()
